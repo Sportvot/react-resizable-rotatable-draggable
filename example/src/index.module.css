@@ -17,10 +17,6 @@ body {
     width: 75vw;
     height: 100vh;
     background-color: #1a1a1a;
-    transform: scale(1.5);
-    position: absolute;
-    left: 60px;
-    top: 40px
 }
 
 .app_container__col_2 {
