@@ -141,8 +141,24 @@ export default function ResizableRect({
     onResize(values, isShiftKey, type)
   }
 
-  const handleDrag = (deltaX, deltaY) => {
+  const handleDrag = (deltaX, deltaY, isShiftKey) => {
     if (!isDraggable) return
+
+    if (isShiftKey) {
+      const absDeltaY = Math.abs(deltaY)
+      const absDeltaX = Math.abs(deltaX)
+
+      if (absDeltaY < 2 && absDeltaX < 2) {
+        // Ignores smaller changes for more precision
+        return
+      }
+
+      if (absDeltaX > absDeltaY) {
+        deltaY = 0
+      } else {
+        deltaX = 0
+      }
+    }
 
     const newLeft = Math.round(left + deltaX / scale)
     const newTop = Math.round(top + deltaY / scale)

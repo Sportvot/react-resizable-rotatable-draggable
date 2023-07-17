@@ -521,7 +521,8 @@ var Rect = /*#__PURE__*/function (_PureComponent) {
           clientY = e.clientY;
         var deltaX = clientX - startX;
         var deltaY = clientY - startY;
-        _this.props.onDrag(deltaX, deltaY);
+        var isShiftKey = e.shiftKey;
+        _this.props.onDrag(deltaX, deltaY, isShiftKey);
         startX = clientX;
         startY = clientY;
       };
@@ -948,8 +949,21 @@ function ResizableRect(_ref) {
     setWidth(width);
     onResize(values, isShiftKey, type);
   };
-  var handleDrag = function handleDrag(deltaX, deltaY) {
+  var handleDrag = function handleDrag(deltaX, deltaY, isShiftKey) {
     if (!isDraggable) return;
+    if (isShiftKey) {
+      var absDeltaY = Math.abs(deltaY);
+      var absDeltaX = Math.abs(deltaX);
+      if (absDeltaY < 2 && absDeltaX < 2) {
+        // Ignores smaller changes for more precision
+        return;
+      }
+      if (absDeltaX > absDeltaY) {
+        deltaY = 0;
+      } else {
+        deltaX = 0;
+      }
+    }
     var newLeft = Math.round(left + deltaX / scale);
     var newTop = Math.round(top + deltaY / scale);
     if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
