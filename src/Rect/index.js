@@ -66,7 +66,8 @@ export default class Rect extends PureComponent {
       const { clientX, clientY } = e
       const deltaX = clientX - startX
       const deltaY = clientY - startY
-      this.props.onDrag(deltaX, deltaY)
+      const isShiftKey = e.shiftKey
+      this.props.onDrag(deltaX, deltaY, isShiftKey)
       startX = clientX
       startY = clientY
     }
