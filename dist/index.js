@@ -838,7 +838,9 @@ function ResizableRect(_ref) {
     focusChange = _ref$focusChange === void 0 ? true : _ref$focusChange,
     _ref$id = _ref.id,
     id = _ref$id === void 0 ? 'default_id' : _ref$id,
-    _onFocusChange = _ref.onFocusChange,
+    onFocusChange = _ref.onFocusChange,
+    _ref$isFocused = _ref.isFocused,
+    isFocusedProp = _ref$isFocused === void 0 ? false : _ref$isFocused,
     initValues = _ref.initValues,
     propHeight = _ref.height,
     propWidth = _ref.width,
@@ -875,6 +877,9 @@ function ResizableRect(_ref) {
     isFocusedRef.current = data;
     _setIsFocused(data);
   };
+  React.useEffect(function () {
+    setIsFocused(isFocusedProp);
+  }, [isFocusedProp]);
   var _useState7 = React.useState((_initValues$width = initValues === null || initValues === void 0 ? void 0 : initValues.width) !== null && _initValues$width !== void 0 ? _initValues$width : 100),
     _useState8 = _slicedToArray(_useState7, 2),
     width = _useState8[0],
@@ -1036,10 +1041,7 @@ function ResizableRect(_ref) {
     itemId: itemId,
     defaultFocus: defaultFocus,
     focusChange: focusChange,
-    onFocusChange: function onFocusChange(isFocused) {
-      setIsFocused(isFocused);
-      _onFocusChange && _onFocusChange(isFocused);
-    }
+    onFocusChange: onFocusChange
   });
 }
 

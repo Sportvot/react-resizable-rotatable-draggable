@@ -11,6 +11,7 @@ const App = () => {
   const [width, setWidth] = useState(100)
   const [top, setTop] = useState(100)
   const [left, setLeft] = useState(100)
+  const [isFocused, setisFocused] = useState(false)
 
   const handleResize = (values) => {
     setTop(Math.round(values.top))
@@ -31,24 +32,22 @@ const App = () => {
           zoomable={ZOOM_DIRECTIONS}
           onResize={handleResize}
           onDrag={handleDrag}
-          // height={height}
-          // width={width}
-          // top={top}
-          // left={left}
-        >
-          <div style={{ width: '100%', height: '100%', background: 'cyan' }} />
-        </ResizableRect>
-
-        <ResizableRect
-          zoomable={ZOOM_DIRECTIONS}
-          onResize={handleResize}
-          onDrag={handleDrag}
+          height={height}
+          width={width}
+          top={top}
+          left={left}
+          isFocused={isFocused}
+          focusChange={false}
+          defaultFocus
         >
           <div style={{ width: '100%', height: '100%', background: 'cyan' }} />
         </ResizableRect>
       </div>
 
       <div className={styles['app_container__col_2']}>
+        <button
+          onClick={() => setisFocused(!isFocused)}
+        >{`FOCUS ${isFocused}`}</button>
         <Properties
           properties={[
             {
