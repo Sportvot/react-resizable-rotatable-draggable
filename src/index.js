@@ -248,10 +248,7 @@ export default function ResizableRect({
       itemId={itemId}
       defaultFocus={defaultFocus}
       focusChange={focusChange}
-      onFocusChange={(isFocused) => {
-        setIsFocused(isFocused)
-        onFocusChange && onFocusChange(isFocused)
-      }}
+      onFocusChange={onFocusChange}
     />
   )
 }

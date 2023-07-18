@@ -831,7 +831,7 @@ function ResizableRect(_ref) {
     focusChange = _ref$focusChange === void 0 ? true : _ref$focusChange,
     _ref$id = _ref.id,
     id = _ref$id === void 0 ? 'default_id' : _ref$id,
-    _onFocusChange = _ref.onFocusChange,
+    onFocusChange = _ref.onFocusChange,
     _ref$isFocused = _ref.isFocused,
     isFocusedProp = _ref$isFocused === void 0 ? false : _ref$isFocused,
     initValues = _ref.initValues,
@@ -1033,10 +1033,7 @@ function ResizableRect(_ref) {
     itemId: itemId,
     defaultFocus: defaultFocus,
     focusChange: focusChange,
-    onFocusChange: function onFocusChange(isFocused) {
-      setIsFocused(isFocused);
-      _onFocusChange && _onFocusChange(isFocused);
-    }
+    onFocusChange: onFocusChange
   });
 }
 
