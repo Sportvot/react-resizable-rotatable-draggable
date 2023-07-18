@@ -898,6 +898,29 @@ function ResizableRect(_ref) {
       setLeft(propLeft);
     }
   }, [propLeft]);
+  React.useEffect(function () {
+    var keyPressCallback = function keyPressCallback(event) {
+      if (event.altKey) {
+        if (event.keyCode == '38') {
+          // up arrow
+          handleDrag(0, -1);
+        } else if (event.keyCode == '40') {
+          // down arrow
+          handleDrag(0, 1);
+        } else if (event.keyCode == '37') {
+          // left arrow
+          handleDrag(-1, 0);
+        } else if (event.keyCode == '39') {
+          // right arrow
+          handleDrag(1, 0);
+        }
+      }
+    };
+    document.addEventListener('keydown', keyPressCallback, false);
+    return function () {
+      document.removeEventListener('keydown', keyPressCallback, false);
+    };
+  }, [left, top]);
   var handleRotate = function handleRotate(angle, startAngle) {
     if (!onRotate) return;
     var rotateAngle = Math.round(startAngle + angle);
@@ -947,7 +970,8 @@ function ResizableRect(_ref) {
     setWidth(width);
     onResize(values, isShiftKey, type);
   };
-  var handleDrag = function handleDrag(deltaX, deltaY, isShiftKey) {
+  var handleDrag = function handleDrag(deltaX, deltaY) {
+    var isShiftKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     if (!onDrag) return;
     if (isShiftKey) {
       var absDeltaY = Math.abs(deltaY);

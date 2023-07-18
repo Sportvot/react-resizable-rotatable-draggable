@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 // import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -76,6 +76,32 @@ export default function ResizableRect({
     }
   }, [propLeft])
 
+  useEffect(() => {
+    const keyPressCallback = (event) => {
+      if (event.altKey) {
+        if (event.keyCode == '38') {
+          // up arrow
+          handleDrag(0, -1)
+        } else if (event.keyCode == '40') {
+          // down arrow
+          handleDrag(0, 1)
+        } else if (event.keyCode == '37') {
+          // left arrow
+          handleDrag(-1, 0)
+        } else if (event.keyCode == '39') {
+          // right arrow
+          handleDrag(1, 0)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', keyPressCallback, false)
+
+    return () => {
+      document.removeEventListener('keydown', keyPressCallback, false)
+    }
+  }, [left, top])
+
   const handleRotate = (angle, startAngle) => {
     if (!onRotate) return
     let rotateAngle = Math.round(startAngle + angle)
@@ -140,7 +166,7 @@ export default function ResizableRect({
     onResize(values, isShiftKey, type)
   }
 
-  const handleDrag = (deltaX, deltaY, isShiftKey) => {
+  const handleDrag = (deltaX, deltaY, isShiftKey = false) => {
     if (!onDrag) return
 
     if (isShiftKey) {
