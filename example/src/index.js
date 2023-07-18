@@ -31,10 +31,18 @@ const App = () => {
           zoomable={ZOOM_DIRECTIONS}
           onResize={handleResize}
           onDrag={handleDrag}
-          height={height}
-          width={width}
-          top={top}
-          left={left}
+          // height={height}
+          // width={width}
+          // top={top}
+          // left={left}
+        >
+          <div style={{ width: '100%', height: '100%', background: 'cyan' }} />
+        </ResizableRect>
+
+        <ResizableRect
+          zoomable={ZOOM_DIRECTIONS}
+          onResize={handleResize}
+          onDrag={handleDrag}
         >
           <div style={{ width: '100%', height: '100%', background: 'cyan' }} />
         </ResizableRect>

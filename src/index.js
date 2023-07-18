@@ -42,8 +42,28 @@ export default function ResizableRect({
   left: propLeft,
   scale = 1
 }) {
-  const [top, setTop] = useState(initValues?.top ?? 10)
-  const [left, setLeft] = useState(initValues?.left ?? 10)
+  const [top, _setTop] = useState(initValues?.top ?? 10)
+  const [left, _setLeft] = useState(initValues?.left ?? 10)
+  const [isFocused, _setIsFocused] = useState(focusChange)
+
+  const topRef = React.useRef(top)
+  const setTop = (data) => {
+    topRef.current = data
+    _setTop(data)
+  }
+
+  const leftRef = React.useRef(left)
+  const setLeft = (data) => {
+    leftRef.current = data
+    _setLeft(data)
+  }
+
+  const isFocusedRef = React.useRef(isFocused)
+  const setIsFocused = (data) => {
+    isFocusedRef.current = data
+    _setIsFocused(data)
+  }
+
   const [width, setWidth] = useState(initValues?.width ?? 100)
   const [height, setHeight] = useState(initValues?.height ?? 100)
   const [rotateAngle, setRotateAngle] = useState(defaultRotateAngle)
@@ -78,7 +98,7 @@ export default function ResizableRect({
 
   useEffect(() => {
     const keyPressCallback = (event) => {
-      if (event.altKey) {
+      if (isFocusedRef.current && event.altKey) {
         if (event.keyCode == '38') {
           // up arrow
           handleDrag(0, -1)
@@ -185,8 +205,8 @@ export default function ResizableRect({
       }
     }
 
-    const newLeft = Math.round(left + deltaX / scale)
-    const newTop = Math.round(top + deltaY / scale)
+    const newLeft = Math.round(leftRef.current + deltaX / scale)
+    const newTop = Math.round(topRef.current + deltaY / scale)
 
     if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return
@@ -218,7 +238,10 @@ export default function ResizableRect({
       itemId={itemId}
       defaultFocus={defaultFocus}
       focusChange={focusChange}
-      onFocusChange={onFocusChange}
+      onFocusChange={(isFocused) => {
+        setIsFocused(isFocused)
+        onFocusChange && onFocusChange(isFocused)
+      }}
     />
   )
 }
