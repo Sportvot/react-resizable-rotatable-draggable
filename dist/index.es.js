@@ -917,16 +917,16 @@ function ResizableRect(_ref) {
       if (isFocusedRef.current && event.altKey) {
         if (event.keyCode == '38') {
           // up arrow
-          handleDrag(0, -1, true);
+          handleDrag(0, -1, false, true);
         } else if (event.keyCode == '40') {
           // down arrow
-          handleDrag(0, 1, true);
+          handleDrag(0, 1, false, true);
         } else if (event.keyCode == '37') {
           // left arrow
-          handleDrag(-1, 0, true);
+          handleDrag(-1, 0, false, true);
         } else if (event.keyCode == '39') {
           // right arrow
-          handleDrag(1, 0, true);
+          handleDrag(1, 0, false, true);
         }
       }
     };
