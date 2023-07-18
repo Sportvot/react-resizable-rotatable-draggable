@@ -924,16 +924,16 @@ function ResizableRect(_ref) {
       if (isFocusedRef.current && event.altKey) {
         if (event.keyCode == '38') {
           // up arrow
-          handleDrag(0, -1);
+          handleDrag(0, -1, true);
         } else if (event.keyCode == '40') {
           // down arrow
-          handleDrag(0, 1);
+          handleDrag(0, 1, true);
         } else if (event.keyCode == '37') {
           // left arrow
-          handleDrag(-1, 0);
+          handleDrag(-1, 0, true);
         } else if (event.keyCode == '39') {
           // right arrow
-          handleDrag(1, 0);
+          handleDrag(1, 0, true);
         }
       }
     };
@@ -992,6 +992,7 @@ function ResizableRect(_ref) {
     onResize(values, isShiftKey, type);
   };
   var handleDrag = function handleDrag(deltaX, deltaY, isShiftKey) {
+    var noDebounce = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     if (!isDraggable) return;
     if (isShiftKey) {
       var absDeltaY = Math.abs(deltaY);
@@ -1013,7 +1014,7 @@ function ResizableRect(_ref) {
     }
     setLeft(newLeft);
     setTop(newTop);
-    onDrag && onDrag(newLeft, newTop);
+    onDrag && onDrag(newLeft, newTop, noDebounce);
   };
   return /*#__PURE__*/React__default["default"].createElement(Rect, {
     styles: styles,

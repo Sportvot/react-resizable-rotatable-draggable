@@ -102,16 +102,16 @@ export default function ResizableRect({
       if (isFocusedRef.current && event.altKey) {
         if (event.keyCode == '38') {
           // up arrow
-          handleDrag(0, -1)
+          handleDrag(0, -1, true)
         } else if (event.keyCode == '40') {
           // down arrow
-          handleDrag(0, 1)
+          handleDrag(0, 1, true)
         } else if (event.keyCode == '37') {
           // left arrow
-          handleDrag(-1, 0)
+          handleDrag(-1, 0, true)
         } else if (event.keyCode == '39') {
           // right arrow
-          handleDrag(1, 0)
+          handleDrag(1, 0, true)
         }
       }
     }
@@ -187,7 +187,7 @@ export default function ResizableRect({
     onResize(values, isShiftKey, type)
   }
 
-  const handleDrag = (deltaX, deltaY, isShiftKey) => {
+  const handleDrag = (deltaX, deltaY, isShiftKey, noDebounce = false) => {
     if (!isDraggable) return
 
     if (isShiftKey) {
@@ -215,7 +215,7 @@ export default function ResizableRect({
 
     setLeft(newLeft)
     setTop(newTop)
-    onDrag && onDrag(newLeft, newTop)
+    onDrag && onDrag(newLeft, newTop, noDebounce)
   }
 
   return (
