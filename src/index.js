@@ -34,6 +34,7 @@ export default function ResizableRect({
   focusChange = true,
   id = 'default_id',
   onFocusChange,
+  isFocused: isFocusedProp = false,
 
   initValues,
   height: propHeight,
@@ -63,6 +64,10 @@ export default function ResizableRect({
     isFocusedRef.current = data
     _setIsFocused(data)
   }
+
+  useEffect(() => {
+    setIsFocused(isFocusedProp)
+  }, [isFocusedProp])
 
   const [width, setWidth] = useState(initValues?.width ?? 100)
   const [height, setHeight] = useState(initValues?.height ?? 100)
