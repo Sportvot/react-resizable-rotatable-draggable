@@ -919,7 +919,7 @@ function ResizableRect(_ref) {
   }, [propLeft]);
   useEffect(function () {
     var keyPressCallback = function keyPressCallback(event) {
-      if (isFocusedRef.current && event.altKey) {
+      if (isFocusedRef.current) {
         if (event.keyCode == '38') {
           // up arrow
           handleDrag(0, -1, false, true);
