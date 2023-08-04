@@ -103,7 +103,7 @@ export default function ResizableRect({
 
   useEffect(() => {
     const keyPressCallback = (event) => {
-      if (isFocusedRef.current && event.altKey) {
+      if (isFocusedRef.current) {
         if (event.keyCode == '38') {
           // up arrow
           handleDrag(0, -1, false, true)
