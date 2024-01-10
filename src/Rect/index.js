@@ -58,6 +58,7 @@ export default class Rect extends PureComponent {
 
   // Drag
   startDrag = (e) => {
+    e.stopImmediatePropagation()
     let { clientX: startX, clientY: startY } = e
     this.props.onDragStart && this.props.onDragStart()
     this._isMouseDown = true
