@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 // import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -34,6 +34,7 @@ export default function ResizableRect({
   focusChange = true,
   id = 'default_id',
   onFocusChange,
+  isFocused: isFocusedProp = false,
 
   initValues,
   height: propHeight,
@@ -44,8 +45,32 @@ export default function ResizableRect({
   scale = 1,
   zIndex = 1
 }) {
-  const [top, setTop] = useState(initValues?.top ?? 10)
-  const [left, setLeft] = useState(initValues?.left ?? 10)
+  const [top, _setTop] = useState(initValues?.top ?? 10)
+  const [left, _setLeft] = useState(initValues?.left ?? 10)
+  const [isFocused, _setIsFocused] = useState(focusChange)
+
+  const topRef = React.useRef(top)
+  const setTop = (data) => {
+    topRef.current = data
+    _setTop(data)
+  }
+
+  const leftRef = React.useRef(left)
+  const setLeft = (data) => {
+    leftRef.current = data
+    _setLeft(data)
+  }
+
+  const isFocusedRef = React.useRef(isFocused)
+  const setIsFocused = (data) => {
+    isFocusedRef.current = data
+    _setIsFocused(data)
+  }
+
+  useEffect(() => {
+    setIsFocused(isFocusedProp)
+  }, [isFocusedProp])
+
   const [width, setWidth] = useState(initValues?.width ?? 100)
   const [height, setHeight] = useState(initValues?.height ?? 100)
   const [rotateAngle, setRotateAngle] = useState(defaultRotateAngle)
@@ -77,6 +102,32 @@ export default function ResizableRect({
       setLeft(propLeft)
     }
   }, [propLeft])
+
+  useEffect(() => {
+    const keyPressCallback = (event) => {
+      if (isFocusedRef.current) {
+        if (event.keyCode == '38') {
+          // up arrow
+          handleDrag(0, -1, false, true)
+        } else if (event.keyCode == '40') {
+          // down arrow
+          handleDrag(0, 1, false, true)
+        } else if (event.keyCode == '37') {
+          // left arrow
+          handleDrag(-1, 0, false, true)
+        } else if (event.keyCode == '39') {
+          // right arrow
+          handleDrag(1, 0, false, true)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', keyPressCallback, false)
+
+    return () => {
+      document.removeEventListener('keydown', keyPressCallback, false)
+    }
+  }, [left, top])
 
   const handleRotate = (angle, startAngle) => {
     if (!onRotate) return
@@ -142,11 +193,32 @@ export default function ResizableRect({
     onResize(values, isShiftKey, type)
   }
 
-  const handleDrag = (deltaX, deltaY) => {
-    if (!isDraggable) return
+  const handleDrag = (
+    deltaX,
+    deltaY,
+    isShiftKey = false,
+    noDebounce = false
+  ) => {
+    if (!onDrag || !isDraggable) return
 
-    const newLeft = Math.round(left + deltaX / scale)
-    const newTop = Math.round(top + deltaY / scale)
+    if (isShiftKey) {
+      const absDeltaY = Math.abs(deltaY)
+      const absDeltaX = Math.abs(deltaX)
+
+      if (absDeltaY < 2 && absDeltaX < 2) {
+        // Ignores smaller changes for more precision
+        return
+      }
+
+      if (absDeltaX > absDeltaY) {
+        deltaY = 0
+      } else {
+        deltaX = 0
+      }
+    }
+
+    const newLeft = Math.round(leftRef.current + deltaX / scale)
+    const newTop = Math.round(topRef.current + deltaY / scale)
 
     if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return
@@ -154,7 +226,7 @@ export default function ResizableRect({
 
     setLeft(newLeft)
     setTop(newTop)
-    onDrag && onDrag(newLeft, newTop)
+    onDrag && onDrag(newLeft, newTop, noDebounce)
   }
 
   return (

@@ -514,7 +514,8 @@ var Rect = /*#__PURE__*/function (_PureComponent) {
           clientY = e.clientY;
         var deltaX = clientX - startX;
         var deltaY = clientY - startY;
-        _this.props.onDrag(deltaX, deltaY);
+        var isShiftKey = e.shiftKey;
+        _this.props.onDrag(deltaX, deltaY, isShiftKey);
         startX = clientX;
         startY = clientY;
       };
@@ -834,6 +835,8 @@ function ResizableRect(_ref) {
     _ref$id = _ref.id,
     id = _ref$id === void 0 ? 'default_id' : _ref$id,
     onFocusChange = _ref.onFocusChange,
+    _ref$isFocused = _ref.isFocused,
+    isFocusedProp = _ref$isFocused === void 0 ? false : _ref$isFocused,
     initValues = _ref.initValues,
     propHeight = _ref.height,
     propWidth = _ref.width,
@@ -848,28 +851,50 @@ function ResizableRect(_ref) {
   var _useState = useState((_initValues$top = initValues === null || initValues === void 0 ? void 0 : initValues.top) !== null && _initValues$top !== void 0 ? _initValues$top : 10),
     _useState2 = _slicedToArray(_useState, 2),
     top = _useState2[0],
-    setTop = _useState2[1];
+    _setTop = _useState2[1];
   var _useState3 = useState((_initValues$left = initValues === null || initValues === void 0 ? void 0 : initValues.left) !== null && _initValues$left !== void 0 ? _initValues$left : 10),
     _useState4 = _slicedToArray(_useState3, 2),
     left = _useState4[0],
-    setLeft = _useState4[1];
-  var _useState5 = useState((_initValues$width = initValues === null || initValues === void 0 ? void 0 : initValues.width) !== null && _initValues$width !== void 0 ? _initValues$width : 100),
+    _setLeft = _useState4[1];
+  var _useState5 = useState(focusChange),
     _useState6 = _slicedToArray(_useState5, 2),
-    width = _useState6[0],
-    setWidth = _useState6[1];
-  var _useState7 = useState((_initValues$height = initValues === null || initValues === void 0 ? void 0 : initValues.height) !== null && _initValues$height !== void 0 ? _initValues$height : 100),
+    isFocused = _useState6[0],
+    _setIsFocused = _useState6[1];
+  var topRef = React.useRef(top);
+  var setTop = function setTop(data) {
+    topRef.current = data;
+    _setTop(data);
+  };
+  var leftRef = React.useRef(left);
+  var setLeft = function setLeft(data) {
+    leftRef.current = data;
+    _setLeft(data);
+  };
+  var isFocusedRef = React.useRef(isFocused);
+  var setIsFocused = function setIsFocused(data) {
+    isFocusedRef.current = data;
+    _setIsFocused(data);
+  };
+  useEffect(function () {
+    setIsFocused(isFocusedProp);
+  }, [isFocusedProp]);
+  var _useState7 = useState((_initValues$width = initValues === null || initValues === void 0 ? void 0 : initValues.width) !== null && _initValues$width !== void 0 ? _initValues$width : 100),
     _useState8 = _slicedToArray(_useState7, 2),
-    height = _useState8[0],
-    setHeight = _useState8[1];
-  var _useState9 = useState(defaultRotateAngle),
+    width = _useState8[0],
+    setWidth = _useState8[1];
+  var _useState9 = useState((_initValues$height = initValues === null || initValues === void 0 ? void 0 : initValues.height) !== null && _initValues$height !== void 0 ? _initValues$height : 100),
     _useState10 = _slicedToArray(_useState9, 2),
-    rotateAngle = _useState10[0],
-    setRotateAngle = _useState10[1];
-  // const [itemId, setItemId] = useState(uuidv4())
-  var _useState11 = useState(id),
+    height = _useState10[0],
+    setHeight = _useState10[1];
+  var _useState11 = useState(defaultRotateAngle),
     _useState12 = _slicedToArray(_useState11, 2),
-    itemId = _useState12[0];
-    _useState12[1];
+    rotateAngle = _useState12[0],
+    setRotateAngle = _useState12[1];
+  // const [itemId, setItemId] = useState(uuidv4())
+  var _useState13 = useState(id),
+    _useState14 = _slicedToArray(_useState13, 2),
+    itemId = _useState14[0];
+    _useState14[1];
   var styles = tLToCenter({
     top: top,
     left: left,
@@ -897,6 +922,29 @@ function ResizableRect(_ref) {
       setLeft(propLeft);
     }
   }, [propLeft]);
+  useEffect(function () {
+    var keyPressCallback = function keyPressCallback(event) {
+      if (isFocusedRef.current) {
+        if (event.keyCode == '38') {
+          // up arrow
+          handleDrag(0, -1, false, true);
+        } else if (event.keyCode == '40') {
+          // down arrow
+          handleDrag(0, 1, false, true);
+        } else if (event.keyCode == '37') {
+          // left arrow
+          handleDrag(-1, 0, false, true);
+        } else if (event.keyCode == '39') {
+          // right arrow
+          handleDrag(1, 0, false, true);
+        }
+      }
+    };
+    document.addEventListener('keydown', keyPressCallback, false);
+    return function () {
+      document.removeEventListener('keydown', keyPressCallback, false);
+    };
+  }, [left, top]);
   var handleRotate = function handleRotate(angle, startAngle) {
     if (!onRotate) return;
     var rotateAngle = Math.round(startAngle + angle);
@@ -947,15 +995,32 @@ function ResizableRect(_ref) {
     onResize(values, isShiftKey, type);
   };
   var handleDrag = function handleDrag(deltaX, deltaY) {
-    if (!isDraggable) return;
-    var newLeft = Math.round(left + deltaX / scale);
-    var newTop = Math.round(top + deltaY / scale);
+    
+    var isShiftKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var noDebounce = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    if (!onDrag || !isDraggable) return;
+    if (isShiftKey) {
+      var absDeltaY = Math.abs(deltaY);
+      var absDeltaX = Math.abs(deltaX);
+      if (absDeltaY < 2 && absDeltaX < 2) {
+        // Ignores smaller changes for more precision
+        return;
+      }
+      if (absDeltaX > absDeltaY) {
+        deltaY = 0;
+      } else {
+        deltaX = 0;
+      }
+    }
+    var newLeft = Math.round(leftRef.current + deltaX / scale);
+    var newTop = Math.round(topRef.current + deltaY / scale);
+
     if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return;
     }
     setLeft(newLeft);
     setTop(newTop);
-    onDrag && onDrag(newLeft, newTop);
+    onDrag && onDrag(newLeft, newTop, noDebounce);
   };
   return /*#__PURE__*/React.createElement(Rect, {
     styles: styles,
