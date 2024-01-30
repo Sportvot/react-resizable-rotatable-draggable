@@ -4,6 +4,17 @@
 
 A react widget that can be resized and rotated via a handler.
 
+## NODE and NPM
+use node 18.x and npm >=8.x
+
+## Important For Merging Pull Requests
+Do the following before the PR is merged after approval
+
+merge latest master into feature branch
+on feature branch, run ```npm version minor```, and push to feature branch
+this will update the package version
+then merge to master from github interface
+
 ### Installation
 
 ```bash

@@ -681,7 +681,8 @@ var Rect = /*#__PURE__*/function (_PureComponent) {
         color = _this$props.color,
         itemId = _this$props.itemId,
         focusChange = _this$props.focusChange,
-        isDraggable = _this$props.isDraggable;
+        isDraggable = _this$props.isDraggable,
+        zIndex = _this$props.zIndex;
       var style = {
         width: isFocused ? Math.abs(width) : Math.abs(width) - 1,
         height: isFocused ? Math.abs(height) : Math.abs(height) - 1,
@@ -703,7 +704,8 @@ var Rect = /*#__PURE__*/function (_PureComponent) {
         className: "rect single-resizer",
         style: _objectSpread2(_objectSpread2({}, style), {}, {
           borderColor: color,
-          position: isDraggable ? 'absolute' : 'relative'
+          position: isDraggable ? 'absolute' : 'relative',
+          zIndex: zIndex
         }),
         tabIndex: "0",
         onFocus: function onFocus() {
@@ -793,7 +795,8 @@ _defineProperty(Rect, "propTypes", {
   focusChange: PropTypes.bool,
   defaultFocus: PropTypes.bool,
   isDraggable: PropTypes.bool,
-  onFocusChange: PropTypes.func
+  onFocusChange: PropTypes.func,
+  zIndex: PropTypes.number
 });
 
 function ResizableRect(_ref) {
@@ -839,8 +842,12 @@ function ResizableRect(_ref) {
     propWidth = _ref.width,
     propTop = _ref.top,
     propLeft = _ref.left,
+    _ref$isDraggable = _ref.isDraggable,
+    isDraggable = _ref$isDraggable === void 0 ? true : _ref$isDraggable,
     _ref$scale = _ref.scale,
-    scale = _ref$scale === void 0 ? 1 : _ref$scale;
+    scale = _ref$scale === void 0 ? 1 : _ref$scale,
+    _ref$zIndex = _ref.zIndex,
+    zIndex = _ref$zIndex === void 0 ? 1 : _ref$zIndex;
   var _useState = useState((_initValues$top = initValues === null || initValues === void 0 ? void 0 : initValues.top) !== null && _initValues$top !== void 0 ? _initValues$top : 10),
     _useState2 = _slicedToArray(_useState, 2),
     top = _useState2[0],
@@ -906,12 +913,12 @@ function ResizableRect(_ref) {
     }
   }, [propWidth]);
   useEffect(function () {
-    if (propTop) {
+    if (propTop || propTop === 0) {
       setTop(propTop);
     }
   }, [propTop]);
   useEffect(function () {
-    if (propLeft) {
+    if (propLeft || propLeft === 0) {
       setLeft(propLeft);
     }
   }, [propLeft]);
@@ -988,9 +995,10 @@ function ResizableRect(_ref) {
     onResize(values, isShiftKey, type);
   };
   var handleDrag = function handleDrag(deltaX, deltaY) {
+    
     var isShiftKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var noDebounce = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    if (!onDrag) return;
+    if (!onDrag || !isDraggable) return;
     if (isShiftKey) {
       var absDeltaY = Math.abs(deltaY);
       var absDeltaX = Math.abs(deltaX);
@@ -1006,6 +1014,7 @@ function ResizableRect(_ref) {
     }
     var newLeft = Math.round(leftRef.current + deltaX / scale);
     var newTop = Math.round(topRef.current + deltaY / scale);
+
     if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return;
     }
@@ -1026,14 +1035,15 @@ function ResizableRect(_ref) {
     onRotateEnd: onRotateEnd,
     onDragStart: onDragStart,
     onDrag: handleDrag,
-    isDraggable: onDrag !== undefined,
+    isDraggable: isDraggable,
     onDragEnd: onDragEnd,
     children: children,
     color: color,
     itemId: itemId,
     defaultFocus: defaultFocus,
     focusChange: focusChange,
-    onFocusChange: onFocusChange
+    onFocusChange: onFocusChange,
+    zIndex: zIndex
   });
 }
 

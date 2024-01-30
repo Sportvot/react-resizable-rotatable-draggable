@@ -41,7 +41,9 @@ export default function ResizableRect({
   width: propWidth,
   top: propTop,
   left: propLeft,
-  scale = 1
+  isDraggable = true, //
+  scale = 1,
+  zIndex = 1
 }) {
   const [top, _setTop] = useState(initValues?.top ?? 10)
   const [left, _setLeft] = useState(initValues?.left ?? 10)
@@ -90,13 +92,13 @@ export default function ResizableRect({
   }, [propWidth])
 
   useEffect(() => {
-    if (propTop) {
+    if (propTop || propTop === 0) {
       setTop(propTop)
     }
   }, [propTop])
 
   useEffect(() => {
-    if (propLeft) {
+    if (propLeft || propLeft === 0) {
       setLeft(propLeft)
     }
   }, [propLeft])
@@ -197,7 +199,7 @@ export default function ResizableRect({
     isShiftKey = false,
     noDebounce = false
   ) => {
-    if (!onDrag) return
+    if (!onDrag || !isDraggable) return
 
     if (isShiftKey) {
       const absDeltaY = Math.abs(deltaY)
@@ -241,7 +243,7 @@ export default function ResizableRect({
       onRotateEnd={onRotateEnd}
       onDragStart={onDragStart}
       onDrag={handleDrag}
-      isDraggable={onDrag !== undefined}
+      isDraggable={isDraggable}
       onDragEnd={onDragEnd}
       children={children}
       color={color}
@@ -249,6 +251,7 @@ export default function ResizableRect({
       defaultFocus={defaultFocus}
       focusChange={focusChange}
       onFocusChange={onFocusChange}
+      zIndex={zIndex}
     />
   )
 }
