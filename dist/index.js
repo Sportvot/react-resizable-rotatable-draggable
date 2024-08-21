@@ -851,7 +851,9 @@ function ResizableRect(_ref) {
     _ref$scale = _ref.scale,
     scale = _ref$scale === void 0 ? 1 : _ref$scale,
     _ref$zIndex = _ref.zIndex,
-    zIndex = _ref$zIndex === void 0 ? 1 : _ref$zIndex;
+    zIndex = _ref$zIndex === void 0 ? 1 : _ref$zIndex,
+    _ref$allowOutOfBounda = _ref.allowOutOfBoundary,
+    allowOutOfBoundary = _ref$allowOutOfBounda === void 0 ? false : _ref$allowOutOfBounda;
   var _useState = React.useState((_initValues$top = initValues === null || initValues === void 0 ? void 0 : initValues.top) !== null && _initValues$top !== void 0 ? _initValues$top : 10),
     _useState2 = _slicedToArray(_useState, 2),
     top = _useState2[0],
@@ -946,7 +948,7 @@ function ResizableRect(_ref) {
       height: height,
       rotateAngle: rotateAngle
     });
-    if (isOutOfBoundary(values.left, values.top, width, height, haveBoundary, itemId)) {
+    if (!allowOutOfBoundary && isOutOfBoundary(values.left, values.top, width, height, haveBoundary, itemId)) {
       return;
     }
     setHeight(height);
@@ -957,7 +959,7 @@ function ResizableRect(_ref) {
     if (!isDraggable) return;
     var newLeft = Math.round(left + deltaX / scale);
     var newTop = Math.round(top + deltaY / scale);
-    if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
+    if (!allowOutOfBoundary && isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return;
     }
     setLeft(newLeft);
