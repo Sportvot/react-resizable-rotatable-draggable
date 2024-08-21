@@ -43,7 +43,8 @@ export default function ResizableRect({
   isDraggable = true, //
   scale = 1,
   zIndex = 1,
-  allowOutOfBoundary = false
+  allowOutOfBoundary = false,
+  transformOrigin = 'center'
 }) {
   const [top, setTop] = useState(initValues?.top ?? 10)
   const [left, setLeft] = useState(initValues?.left ?? 10)
@@ -185,6 +186,7 @@ export default function ResizableRect({
       focusChange={focusChange}
       onFocusChange={onFocusChange}
       zIndex={zIndex}
+      transformOrigin={transformOrigin}
     />
   )
 }
