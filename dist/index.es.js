@@ -899,6 +899,9 @@ function ResizableRect(_ref) {
       setLeft(propLeft);
     }
   }, [propLeft]);
+  useEffect(function () {
+    setRotateAngle(defaultRotateAngle);
+  }, [defaultRotateAngle]);
   var handleRotate = function handleRotate(angle, startAngle) {
     if (!onRotate) return;
     var rotateAngle = Math.round(startAngle + angle);

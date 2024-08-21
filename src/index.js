@@ -79,6 +79,10 @@ export default function ResizableRect({
     }
   }, [propLeft])
 
+  useEffect(() => {
+    setRotateAngle(defaultRotateAngle);
+  }, [defaultRotateAngle])
+
   const handleRotate = (angle, startAngle) => {
     if (!onRotate) return
     let rotateAngle = Math.round(startAngle + angle)
