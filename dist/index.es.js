@@ -681,13 +681,15 @@ var Rect = /*#__PURE__*/function (_PureComponent) {
         itemId = _this$props.itemId,
         focusChange = _this$props.focusChange,
         isDraggable = _this$props.isDraggable,
-        zIndex = _this$props.zIndex;
+        zIndex = _this$props.zIndex,
+        transformOrigin = _this$props.transformOrigin;
       var style = {
         width: isFocused ? Math.abs(width) : Math.abs(width) - 1,
         height: isFocused ? Math.abs(height) : Math.abs(height) - 1,
         transform: "rotate(".concat(rotateAngle, "deg)"),
         left: centerX - Math.abs(width) / 2,
-        top: centerY - Math.abs(height) / 2
+        top: centerY - Math.abs(height) / 2,
+        transformOrigin: transformOrigin
       };
       var direction = zoomable.split(',').map(function (d) {
         return d.trim();
@@ -795,7 +797,8 @@ _defineProperty(Rect, "propTypes", {
   defaultFocus: PropTypes.bool,
   isDraggable: PropTypes.bool,
   onFocusChange: PropTypes.func,
-  zIndex: PropTypes.number
+  zIndex: PropTypes.number,
+  transformOrigin: PropTypes.string
 });
 
 function ResizableRect(_ref) {
@@ -844,7 +847,11 @@ function ResizableRect(_ref) {
     _ref$scale = _ref.scale,
     scale = _ref$scale === void 0 ? 1 : _ref$scale,
     _ref$zIndex = _ref.zIndex,
-    zIndex = _ref$zIndex === void 0 ? 1 : _ref$zIndex;
+    zIndex = _ref$zIndex === void 0 ? 1 : _ref$zIndex,
+    _ref$allowOutOfBounda = _ref.allowOutOfBoundary,
+    allowOutOfBoundary = _ref$allowOutOfBounda === void 0 ? false : _ref$allowOutOfBounda,
+    _ref$transformOrigin = _ref.transformOrigin,
+    transformOrigin = _ref$transformOrigin === void 0 ? 'center' : _ref$transformOrigin;
   var _useState = useState((_initValues$top = initValues === null || initValues === void 0 ? void 0 : initValues.top) !== null && _initValues$top !== void 0 ? _initValues$top : 10),
     _useState2 = _slicedToArray(_useState, 2),
     top = _useState2[0],
@@ -897,6 +904,9 @@ function ResizableRect(_ref) {
       setLeft(propLeft);
     }
   }, [propLeft]);
+  useEffect(function () {
+    setRotateAngle(defaultRotateAngle);
+  }, [defaultRotateAngle]);
   var handleRotate = function handleRotate(angle, startAngle) {
     if (!onRotate) return;
     var rotateAngle = Math.round(startAngle + angle);
@@ -939,7 +949,7 @@ function ResizableRect(_ref) {
       height: height,
       rotateAngle: rotateAngle
     });
-    if (isOutOfBoundary(values.left, values.top, width, height, haveBoundary, itemId)) {
+    if (!allowOutOfBoundary && isOutOfBoundary(values.left, values.top, width, height, haveBoundary, itemId)) {
       return;
     }
     setHeight(height);
@@ -950,7 +960,7 @@ function ResizableRect(_ref) {
     if (!isDraggable) return;
     var newLeft = Math.round(left + deltaX / scale);
     var newTop = Math.round(top + deltaY / scale);
-    if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
+    if (!allowOutOfBoundary && isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return;
     }
     setLeft(newLeft);
@@ -978,7 +988,8 @@ function ResizableRect(_ref) {
     defaultFocus: defaultFocus,
     focusChange: focusChange,
     onFocusChange: onFocusChange,
-    zIndex: zIndex
+    zIndex: zIndex,
+    transformOrigin: transformOrigin
   });
 }
 

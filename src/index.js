@@ -42,7 +42,9 @@ export default function ResizableRect({
   left: propLeft,
   isDraggable = true, //
   scale = 1,
-  zIndex = 1
+  zIndex = 1,
+  allowOutOfBoundary = false,
+  transformOrigin = 'center'
 }) {
   const [top, setTop] = useState(initValues?.top ?? 10)
   const [left, setLeft] = useState(initValues?.left ?? 10)
@@ -77,6 +79,10 @@ export default function ResizableRect({
       setLeft(propLeft)
     }
   }, [propLeft])
+
+  useEffect(() => {
+    setRotateAngle(defaultRotateAngle);
+  }, [defaultRotateAngle])
 
   const handleRotate = (angle, startAngle) => {
     if (!onRotate) return
@@ -124,7 +130,7 @@ export default function ResizableRect({
     const values = centerToTL({ centerX, centerY, width, height, rotateAngle })
 
     if (
-      isOutOfBoundary(
+      !allowOutOfBoundary && isOutOfBoundary(
         values.left,
         values.top,
         width,
@@ -148,7 +154,7 @@ export default function ResizableRect({
     const newLeft = Math.round(left + deltaX / scale)
     const newTop = Math.round(top + deltaY / scale)
 
-    if (isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
+    if (!allowOutOfBoundary && isOutOfBoundary(newLeft, newTop, width, height, haveBoundary, itemId)) {
       return
     }
 
@@ -180,6 +186,7 @@ export default function ResizableRect({
       focusChange={focusChange}
       onFocusChange={onFocusChange}
       zIndex={zIndex}
+      transformOrigin={transformOrigin}
     />
   )
 }

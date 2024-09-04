@@ -37,7 +37,8 @@ export default class Rect extends PureComponent {
     defaultFocus: PropTypes.bool,
     isDraggable: PropTypes.bool,
     onFocusChange: PropTypes.func,
-    zIndex: PropTypes.number
+    zIndex: PropTypes.number,
+    transformOrigin: PropTypes.string
   }
 
   constructor(props) {
@@ -216,7 +217,8 @@ export default class Rect extends PureComponent {
       itemId,
       focusChange,
       isDraggable,
-      zIndex
+      zIndex,
+      transformOrigin
     } = this.props
 
     const style = {
@@ -224,7 +226,8 @@ export default class Rect extends PureComponent {
       height: isFocused ? Math.abs(height) : Math.abs(height) - 1,
       transform: `rotate(${rotateAngle}deg)`,
       left: centerX - Math.abs(width) / 2,
-      top: centerY - Math.abs(height) / 2
+      top: centerY - Math.abs(height) / 2,
+      transformOrigin
     }
 
     const direction = zoomable
